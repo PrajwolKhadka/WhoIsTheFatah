@@ -20,7 +20,6 @@ import { registerSocketHandlers } from "./interfaces/socket/registerSocketHandle
 const PORT = process.env.PORT || 4000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 
-// ---- infrastructure (concrete, swappable) ----
 const app = createExpressApp(CLIENT_URL);
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: CLIENT_URL, methods: ["GET", "POST"] } });

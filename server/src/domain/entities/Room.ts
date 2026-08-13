@@ -10,10 +10,10 @@ export interface Room {
     players: Player[];
     phase: number;
     round: number;
-    roundThisPhase: number;
+    roundsThisPhase: number;
     word: string;
     hint: string;
-    clues: Clue;
+    clues: Clue[];
     votes: Vote[];
     submittedThisRound: Set<string>;
     timerEnd: number | null;

@@ -34,7 +34,7 @@ export class GameEngine {
     if (!room) return " Room Vetena!";
     if (room.status !== "clue") return "Clue lina mandina mah ta!";
     const player = room.players.find((p) => p.id === playerId);
-    if (!player || player.eliminated)
+    if (!player || player.eliminated || player.left)
       return "Prabhu hajur active hunu hunna yesma!!!";
     if (room.submittedThisRound.has(playerId)) return "Submit Vaisakyo!";
 
@@ -64,8 +64,8 @@ export class GameEngine {
     if (room.status !== "voting") return "Voting garna paxii auney tya!";
     const voter = room.players.find((p) => p.id === voterId);
     const target = room.players.find((p) => p.id === targetId);
-    if (!voter || voter.eliminated) return "You are not active in this vote";
-    if (!target || target.eliminated) return "Invalid vote target";
+    if (!voter || voter.eliminated || voter.left) return "You are not active in this vote";
+    if (!target || target.eliminated || target.left) return "Invalid vote target";
     if (voter.id === target.id) return "You cannot vote for yourself";
     if (room.votes.find((v) => v.voterId === voterId)) return "Already voted";
 
@@ -179,7 +179,7 @@ export class GameEngine {
 
     player.left = true;
 
-    // the imposter abandoned the game -> Sojho win by forfeit
+    // the imposter abandoned the game resulting Sojho win by forfeit
     if (playerId === room.fatahId) {
       room.winner = "sojho";
       room.status = "ended";
@@ -193,7 +193,7 @@ export class GameEngine {
 
     const active = activePlayers(room);
 
-    // not enough players left to keep playing -> Fatah wins by default
+    // not enough players left to keep playing resulting Fatah wins by default
     if (active.length < MIN_PLAYERS) {
       room.winner = "fatah";
       room.status = "ended";

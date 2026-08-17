@@ -23,6 +23,7 @@ export class JoinRoom {
       connected: true,
       isHost: false,
       eliminated: false,
+      left: false,
       isFatah: false,
     };
     room.players.push(player);

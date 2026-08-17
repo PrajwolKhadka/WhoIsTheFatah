@@ -35,8 +35,8 @@ const engine = new GameEngine(rooms, words, scheduler, notifier);
 const useCases = {
   createRoom: new CreateRoom(rooms),
   joinRoom: new JoinRoom(rooms, notifier),
-  rejoinRoom: new RejoinRoom(rooms, notifier),
-  markPlayerDisconnected: new MarkPlayerDisconnected(rooms, notifier),
+  rejoinRoom: new RejoinRoom(engine),
+  markPlayerDisconnected: new MarkPlayerDisconnected(engine),
   startGame: new StartGame(engine),
   submitClue: new SubmitClue(engine),
   submitVote: new SubmitVote(engine),

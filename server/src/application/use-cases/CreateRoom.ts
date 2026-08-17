@@ -24,6 +24,7 @@ export class CreateRoom {
       connected: true,
       isHost: true,
       eliminated: false,
+      left: false,
       isFatah: false,
     };
 

@@ -5,5 +5,6 @@ export interface Player {
   connected: boolean;
   isHost: boolean;
   eliminated: boolean;
+  left: boolean;
   isFatah: boolean; // only ever sent to that player's own socket, never broadcast
 }

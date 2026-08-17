@@ -25,7 +25,7 @@ export default function VotingPanel({
     setPending(null);
   }, [resetKey]);
 
-  const candidates = players.filter((p) => !p.eliminated && p.id !== selfId);
+  const candidates = players.filter((p) => !p.eliminated && !p.left && p.id !== selfId);
 
   return (
     <div className="case-card p-3 sm:p-4">

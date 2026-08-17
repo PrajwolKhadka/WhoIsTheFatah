@@ -96,7 +96,7 @@ export default function RoomView({ code }: { code: string }) {
   }
 
   const self = state.players.find((p) => p.id === selfId);
-  const activePlayers = state.players.filter((p) => !p.eliminated);
+  const activePlayers = state.players.filter((p) => !p.eliminated && !p.left);
   const isHost = !!self?.isHost;
   const iAmEliminated = !!self?.eliminated;
 

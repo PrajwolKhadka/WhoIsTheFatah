@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --color-ink: #12100e;
+  --color-ink-raised: #1b1815;
+  --color-ink-card: #211d19;
+  --color-paper: #ede6d6;
+  --color-paper-dim: #a89f8c;
+  --color-lamp: #e8a33d;
+  --color-lamp-dim: #7a5a24;
+  --color-alarm: #c1432b;
+  --color-alarm-dim: #5c2318;
+  --color-line: #3a352e;
+  --font-display-stack: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+  --font-body-stack: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-ink-raised: var(--color-ink-raised);
+  --color-ink-card: var(--color-ink-card);
+  --color-paper: var(--color-paper);
+  --color-paper-dim: var(--color-paper-dim);
+  --color-lamp: var(--color-lamp);
+  --color-lamp-dim: var(--color-lamp-dim);
+  --color-alarm: var(--color-alarm);
+  --color-alarm-dim: var(--color-alarm-dim);
+  --color-line: var(--color-line);
+  --font-display: var(--font-display-stack);
+  --font-body: var(--font-body-stack);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-body-stack);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232, 163, 61, 0.08), transparent),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+}
+
+.font-display {
+  font-family: var(--font-display-stack);
+}
+
+.case-card {
+  background: var(--color-ink-card);
+  border: 1px solid var(--color-line);
+}
+
+.tape {
+  position: relative;
+}
+.tape::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 44px;
+  height: 16px;
+  background: rgba(237, 230, 214, 0.14);
+  border: 1px solid rgba(237, 230, 214, 0.2);
+}
+
+@keyframes fuse-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.fuse-warning {
+  animation: fuse-pulse 0.6s ease-in-out infinite;
+}
+
+::selection {
+  background: var(--color-lamp);
+  color: var(--color-ink);
+}
+
+* {
+  scrollbar-color: var(--color-line) transparent;
+}

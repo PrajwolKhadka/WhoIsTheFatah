@@ -1,4 +1,4 @@
-import { MIN_PLAYERS, MAX_PLAYERS, REVEAL_SECONDS, VOTE_SECONDS, CLUE_SECONDS } from "../../domain/constants";
+import { MIN_PLAYERS, MAX_PLAYERS, REVEAL_SECONDS, VOTE_SECONDS, CLUE_SECONDS, DISCONNECT_GRACE_SECONDS } from "../../domain/constants";
 import { activePlayers, Room } from "../../domain/entities/Room";
 import { randomRoundsThisPhase } from "../../domain/services/randomRoundsThisPhase";
 import { Notifier } from "../ports/Notifier";
@@ -108,7 +108,113 @@ export class GameEngine {
     this.notifier.broadcastState(code);
     return null;
   }
+  markDisconnected(code: string, playerId: string): void {
+    const room = this.rooms.get(code);
+    if (!room) return;
+    const player = room.players.find((p) => p.id === playerId);
+    if (!player) return;
 
+    player.connected = false;
+    player.socketId = null;
+    this.rooms.save(room);
+    this.notifier.broadcastState(code);
+
+    // give them a window to reconnect before they're treated as having left
+    this.scheduler.schedule(this.leaveKey(code, playerId), DISCONNECT_GRACE_SECONDS, () =>
+      this.handleGraceExpired(code, playerId)
+    );
+  }
+
+  markReconnected(code: string, playerId: string, socketId: string): boolean {
+    const room = this.rooms.get(code);
+    if (!room) return false;
+    const player = room.players.find((p) => p.id === playerId);
+    if (!player) return false;
+
+    player.connected = true;
+    player.socketId = socketId;
+    this.rooms.save(room);
+    this.notifier.broadcastState(code);
+
+    this.scheduler.cancel(this.leaveKey(code, playerId));
+    return true;
+  }
+
+  private leaveKey(code: string, playerId: string): string {
+    return `leave:${code}:${playerId}`;
+  }
+
+  private handleGraceExpired(code: string, playerId: string): void {
+    this.scheduler.cancel(this.leaveKey(code, playerId));
+
+    const room = this.rooms.get(code);
+    if (!room) return;
+    const player = room.players.find((p) => p.id === playerId);
+    if (!player || player.connected) return; // reconnected in the meantime
+
+    // game hasn't started yet: just remove them, no role/history to preserve
+    if (room.status === "lobby") {
+      room.players = room.players.filter((p) => p.id !== playerId);
+      if (room.players.length === 0) {
+        this.scheduler.cancel(code);
+        this.rooms.delete(code);
+        return;
+      }
+      if (room.hostId === playerId) {
+        room.hostId = room.players[0].id;
+        room.players[0].isHost = true;
+      }
+      this.rooms.save(room);
+      this.notifier.broadcastState(code);
+      return;
+    }
+
+    // game already decided: just reflect that they left, don't touch the outcome
+    if (room.status === "ended") {
+      player.left = true;
+      this.rooms.save(room);
+      this.notifier.broadcastState(code);
+      return;
+    }
+
+    player.left = true;
+
+    // the imposter abandoned the game -> Sojho win by forfeit
+    if (playerId === room.fatahId) {
+      room.winner = "sojho";
+      room.status = "ended";
+      room.timerEnd = null;
+      room.timerPhaseTag = null;
+      this.scheduler.cancel(code);
+      this.rooms.save(room);
+      this.notifier.broadcastState(code);
+      return;
+    }
+
+    const active = activePlayers(room);
+
+    // not enough players left to keep playing -> Fatah wins by default
+    if (active.length < MIN_PLAYERS) {
+      room.winner = "fatah";
+      room.status = "ended";
+      room.timerEnd = null;
+      room.timerPhaseTag = null;
+      this.scheduler.cancel(code);
+      this.rooms.save(room);
+      this.notifier.broadcastState(code);
+      return;
+    }
+
+    this.rooms.save(room);
+    this.notifier.broadcastState(code);
+
+    // removing them from the active pool may complete the current round/vote
+    if (room.status === "clue" && room.submittedThisRound.size >= active.length) {
+      this.forceEndClueRound(code);
+    } else if (room.status === "voting" && room.votes.length >= active.length) {
+      this.resolveVoting(code);
+    }
+  }
   private startPhase(room: Room) {
     room.phase += 1;
     room.round = 1;

@@ -8,6 +8,7 @@ export function toPublicGameState(room: Room): PublicGameState {
     connected: p.connected,
     isHost: p.isHost,
     eliminated: p.eliminated,
+    left: p.left,
   }));
 
   const revealed = room.status === "reveal" || room.status === "ended";

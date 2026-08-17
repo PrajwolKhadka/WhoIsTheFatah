@@ -7,6 +7,7 @@ export interface PublicPlayer {
   connected: boolean;
   isHost: boolean;
   eliminated: boolean;
+  left: boolean;
 }
 
 export interface PublicGameState {

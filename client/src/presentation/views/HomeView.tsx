@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRoomEntry } from "@/src/application/hooks/useRoomEntry";
+import Link from "next/link";
 
 type Mode = "create" | "join";
 
@@ -81,12 +82,30 @@ export default function HomeView() {
             className="h-24 w-auto object-contain sm:h-28 lg:h-32"
           />
         </div>
-        <button
-          type="button"
-          className="hidden border-2 border-[#17151a] bg-white px-4 py-2 font-display text-xs uppercase tracking-[0.12em] shadow-[3px_3px_0_#17151a] transition-transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_#17151a] sm:block"
+        <Link
+          href="/how-to-play"
+          className="
+    hidden
+    border-2
+    border-[#17151a]
+    bg-white
+    px-4
+    py-2
+    font-display
+    text-xs
+    uppercase
+    tracking-[0.12em]
+    shadow-[3px_3px_0_#17151a]
+    transition-transform
+    hover:translate-x-[2px]
+    hover:translate-y-[2px]
+    hover:bg-[#f7c948]
+    hover:shadow-[1px_1px_0_#17151a]
+    sm:block
+  "
         >
           How to play
-        </button>
+        </Link>
       </header>
 
       {/* Main */}

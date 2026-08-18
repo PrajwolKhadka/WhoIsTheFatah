@@ -5,4 +5,4 @@ export const MIN_PLAYERS = 3;
 export const MAX_PLAYERS = 12;
 export const ROUNDS_PER_PHASE_MIN = 3;
 export const ROUNDS_PER_PHASE_MAX = 4;
-export const DISCONNECT_GRACE_SECONDS = 30;
+export const DISCONNECT_GRACE_SECONDS = 50;

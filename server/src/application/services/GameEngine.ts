@@ -1,4 +1,11 @@
-import { MIN_PLAYERS, MAX_PLAYERS, REVEAL_SECONDS, VOTE_SECONDS, CLUE_SECONDS, DISCONNECT_GRACE_SECONDS } from "../../domain/constants";
+import {
+  MIN_PLAYERS,
+  MAX_PLAYERS,
+  REVEAL_SECONDS,
+  VOTE_SECONDS,
+  CLUE_SECONDS,
+  DISCONNECT_GRACE_SECONDS,
+} from "../../domain/constants";
 import { activePlayers, Room } from "../../domain/entities/Room";
 import { randomRoundsThisPhase } from "../../domain/services/randomRoundsThisPhase";
 import { Notifier } from "../ports/Notifier";
@@ -17,14 +24,22 @@ export class GameEngine {
 
   startGame(code: string, requesterId: string): string | null {
     const room = this.rooms.get(code);
-    if (!room) return "Room Vetena";
-    if (requesterId !== room.hostId) return "Host le matra start garna pauxa";
+    if (!room) return "Room nai vetena";
+    if (requesterId !== room.hostId) return "Oops! Host le matra suru garna pauxa.";
+    if (room.status !== "lobby") return "Loll game suru vaisakyo";
     if (room.players.length < MIN_PLAYERS)
-      return `Kamtii ma ${MIN_PLAYERS} chahinxa!`;
-    if (room.status !== "lobby") return "Game suru vaisakyo";
+      return `Launa ni kamti ma ${MIN_PLAYERS} manxe chahinxa`;
+
+    const offline = room.players.filter((p) => !p.connected);
+    if (offline.length > 0) {
+      return `Sab jana hunu paryo k suru garna hawa!! — ${offline
+        .map((p) => p.name)
+        .join(", ")} offline`;
+    }
 
     room.players.forEach((p) => (p.eliminated = false));
     this.startPhase(room);
+    this.rooms.save(room);
     this.notifier.broadcastState(code);
     return null;
   }
@@ -64,8 +79,10 @@ export class GameEngine {
     if (room.status !== "voting") return "Voting garna paxii auney tya!";
     const voter = room.players.find((p) => p.id === voterId);
     const target = room.players.find((p) => p.id === targetId);
-    if (!voter || voter.eliminated || voter.left) return "You are not active in this vote";
-    if (!target || target.eliminated || target.left) return "Invalid vote target";
+    if (!voter || voter.eliminated || voter.left)
+      return "You are not active in this vote";
+    if (!target || target.eliminated || target.left)
+      return "Invalid vote target";
     if (voter.id === target.id) return "You cannot vote for yourself";
     if (room.votes.find((v) => v.voterId === voterId)) return "Already voted";
 
@@ -120,12 +137,14 @@ export class GameEngine {
     this.notifier.broadcastState(code);
 
     // give them a window to reconnect before they're treated as having left
-    this.scheduler.schedule(this.leaveKey(code, playerId), DISCONNECT_GRACE_SECONDS, () =>
-      this.handleGraceExpired(code, playerId)
+    this.scheduler.schedule(
+      this.leaveKey(code, playerId),
+      DISCONNECT_GRACE_SECONDS,
+      () => this.handleGraceExpired(code, playerId),
     );
   }
 
-  markReconnected(code: string, playerId: string, socketId: string): boolean {
+    markReconnected(code: string, playerId: string, socketId: string): boolean {
     const room = this.rooms.get(code);
     if (!room) return false;
     const player = room.players.find((p) => p.id === playerId);
@@ -137,6 +156,17 @@ export class GameEngine {
     this.notifier.broadcastState(code);
 
     this.scheduler.cancel(this.leaveKey(code, playerId));
+
+    // A clue round's word/hint is only pushed out at the moment it starts.
+    // If this player was mid-reconnect when that happened, they'd otherwise
+    // have no word at all (or a stale one from before they dropped) — resend
+    // it now that they're back.
+    if (room.status === "clue" && !player.eliminated && !player.left) {
+      this.notifier.sendDirect(playerId, "your-role", {
+        text: player.isFatah ? room.hint : room.word,
+        isFatah: player.isFatah,
+      });
+    }
     return true;
   }
 
@@ -209,7 +239,10 @@ export class GameEngine {
     this.notifier.broadcastState(code);
 
     // removing them from the active pool may complete the current round/vote
-    if (room.status === "clue" && room.submittedThisRound.size >= active.length) {
+    if (
+      room.status === "clue" &&
+      room.submittedThisRound.size >= active.length
+    ) {
       this.forceEndClueRound(code);
     } else if (room.status === "voting" && room.votes.length >= active.length) {
       this.resolveVoting(code);
@@ -262,7 +295,7 @@ export class GameEngine {
     this.rooms.save(room);
     this.notifier.broadcastState(room.code);
     this.scheduler.schedule(room.code, CLUE_SECONDS, () =>
-      this.forceEndClueRound(room.code)
+      this.forceEndClueRound(room.code),
     );
   }
 
@@ -301,7 +334,9 @@ export class GameEngine {
     room.timerEnd = Date.now() + VOTE_SECONDS * 1000;
     this.rooms.save(room);
     this.notifier.broadcastState(room.code);
-    this.scheduler.schedule(room.code, VOTE_SECONDS, () => this.resolveVoting(room.code));
+    this.scheduler.schedule(room.code, VOTE_SECONDS, () =>
+      this.resolveVoting(room.code),
+    );
   }
 
   private resolveVoting(code: string) {
@@ -310,7 +345,9 @@ export class GameEngine {
     this.scheduler.cancel(code);
 
     const tally = new Map<string, number>();
-    room.votes.forEach((v) => tally.set(v.targetId, (tally.get(v.targetId) ?? 0) + 1));
+    room.votes.forEach((v) =>
+      tally.set(v.targetId, (tally.get(v.targetId) ?? 0) + 1),
+    );
 
     let eliminatedId: string | null = null;
     let max = -1;

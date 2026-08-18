@@ -335,7 +335,7 @@ export default function HowToPlayPage() {
               <div className="flex items-center gap-4">
 
                 <div className="flex h-16 w-16 shrink-0 rotate-[-3deg] items-center justify-center border-2 border-[#17151a] bg-[#f7c948] font-display text-xl shadow-[3px_3px_0_#17151a]">
-                  15s
+                  30s
                 </div>
 
                 <div>

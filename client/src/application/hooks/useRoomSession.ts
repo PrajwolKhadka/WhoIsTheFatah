@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getSocket } from "../../infrastructure/socket/socketClient";
 import {
+  clearSession,
   loadSession,
   saveSession,
 } from "../../infrastructure/storage/sessionStorage";
@@ -31,10 +32,11 @@ export function useRoomSession(
       socket.emit(
         "room:rejoin",
         { code, playerId: session.playerId },
-        (res: { ok?: boolean; state?: PublicGameState }) => {
+        (res: { ok?: boolean; state?: PublicGameState; error?: string}) => {
           if (res.ok && res.state) {
             onRejoinState(res.state);
           } else {
+            clearSession();
             setNeedsJoin(true);
           }
         },
@@ -53,6 +55,9 @@ export function useRoomSession(
     // having "left" once the disconnect grace period on the old
     // connection times out.
     socket.on("connect", attemptRejoin);
+    if (socket.connected) {
+      attemptRejoin();
+    }
     return () => {
       socket.off("connect", attemptRejoin);
     };

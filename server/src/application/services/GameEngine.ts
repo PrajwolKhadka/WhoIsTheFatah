@@ -25,7 +25,8 @@ export class GameEngine {
   startGame(code: string, requesterId: string): string | null {
     const room = this.rooms.get(code);
     if (!room) return "Room nai vetena";
-    if (requesterId !== room.hostId) return "Oops! Host le matra suru garna pauxa.";
+    if (requesterId !== room.hostId)
+      return "Oops! Host le matra suru garna pauxa.";
     if (room.status !== "lobby") return "Loll game suru vaisakyo";
     if (room.players.length < MIN_PLAYERS)
       return `Launa ni kamti ma ${MIN_PLAYERS} manxe chahinxa`;
@@ -130,7 +131,7 @@ export class GameEngine {
     if (!room) return;
     const player = room.players.find((p) => p.id === playerId);
     if (!player) return;
-
+    if (!player.connected) return;
     player.connected = false;
     player.socketId = null;
     this.rooms.save(room);
@@ -144,24 +145,27 @@ export class GameEngine {
     );
   }
 
-    markReconnected(code: string, playerId: string, socketId: string): boolean {
+  markReconnected(code: string, playerId: string, socketId: string): boolean {
     const room = this.rooms.get(code);
     if (!room) return false;
     const player = room.players.find((p) => p.id === playerId);
     if (!player) return false;
 
+    this.scheduler.cancel(this.leaveKey(code, playerId));
+
     player.connected = true;
     player.socketId = socketId;
+    player.left = false;
     this.rooms.save(room);
     this.notifier.broadcastState(code);
 
-    this.scheduler.cancel(this.leaveKey(code, playerId));
+    // this.scheduler.cancel(this.leaveKey(code, playerId));
 
     // A clue round's word/hint is only pushed out at the moment it starts.
     // If this player was mid-reconnect when that happened, they'd otherwise
     // have no word at all (or a stale one from before they dropped) — resend
     // it now that they're back.
-    if (room.status === "clue" && !player.eliminated && !player.left) {
+    if (room.status === "clue" && !player.eliminated) {
       this.notifier.sendDirect(playerId, "your-role", {
         text: player.isFatah ? room.hint : room.word,
         isFatah: player.isFatah,

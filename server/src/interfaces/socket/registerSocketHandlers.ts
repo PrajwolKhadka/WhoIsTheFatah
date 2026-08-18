@@ -27,7 +27,7 @@ export function registerSocketHandlers(
   io: Server,
   rooms: RoomRepository,
   sockets: PlayerSocketRegistry,
-  useCases: SocketUseCases
+  useCases: SocketUseCases,
 ) {
   io.on("connection", (socket: Socket) => {
     const data = socket.data as SocketSession;
@@ -42,20 +42,23 @@ export function registerSocketHandlers(
       cb?.({ code, playerId });
     });
 
-    socket.on("room:join", ({ code, name }: { code: string; name: string }, cb) => {
-      const upper = (code || "").toUpperCase().trim();
-      const result = useCases.joinRoom.execute(upper, name || "Player");
-      if ("error" in result) {
-        cb?.({ error: result.error });
-        return;
-      }
-      sockets.set(result.playerId, socket.id);
-      useCases.rejoinRoom.execute(upper, result.playerId, socket.id);
-      socket.join(upper);
-      data.code = upper;
-      data.playerId = result.playerId;
-      cb?.({ code: upper, playerId: result.playerId });
-    });
+    socket.on(
+      "room:join",
+      ({ code, name }: { code: string; name: string }, cb) => {
+        const upper = (code || "").toUpperCase().trim();
+        const result = useCases.joinRoom.execute(upper, name || "Player");
+        if ("error" in result) {
+          cb?.({ error: result.error });
+          return;
+        }
+        sockets.set(result.playerId, socket.id);
+        useCases.rejoinRoom.execute(upper, result.playerId, socket.id);
+        socket.join(upper);
+        data.code = upper;
+        data.playerId = result.playerId;
+        cb?.({ code: upper, playerId: result.playerId });
+      },
+    );
 
     socket.on(
       "room:rejoin",
@@ -72,7 +75,7 @@ export function registerSocketHandlers(
         data.playerId = playerId;
         const room = rooms.get(upper);
         cb?.({ ok: true, state: room ? toPublicGameState(room) : null });
-      }
+      },
     );
 
     socket.on("game:start", (_payload, cb) => {
@@ -95,14 +98,27 @@ export function registerSocketHandlers(
 
     socket.on("vote:submit", ({ targetId }: { targetId: string }, cb) => {
       if (!data.code || !data.playerId) return;
-      const error = useCases.submitVote.execute(data.code, data.playerId, targetId);
+      const error = useCases.submitVote.execute(
+        data.code,
+        data.playerId,
+        targetId,
+      );
       cb?.({ error });
     });
 
     socket.on("disconnect", () => {
-      if (data.code && data.playerId) {
-        useCases.markPlayerDisconnected.execute(data.code, data.playerId);
-      }
+      if (!data.code || !data.playerId) return;
+      setTimeout(() => {
+        // Only mark offline if this socket is still the one registered
+        // (i.e. they didn't already rejoin with a new socket)
+        const currentSocketId = sockets.get(data.playerId!);
+        if (currentSocketId === socket.id) {
+          useCases.markPlayerDisconnected.execute(data.code!, data.playerId!);
+        }
+      }, 1500);
+      // if (data.code && data.playerId) {
+      //   useCases.markPlayerDisconnected.execute(data.code, data.playerId);
+      // }
     });
   });
 }

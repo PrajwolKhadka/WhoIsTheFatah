@@ -39,6 +39,7 @@ export class CreateRoom {
       word: "",
       hint: "",
       clues: [],
+      chatMessages: [],
       votes: [],
       submittedThisRound: new Set(),
       timerEnd: null,

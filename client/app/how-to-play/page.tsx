@@ -5,10 +5,8 @@ import Link from "next/link";
 export default function HowToPlayPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#f4efe4] text-[#17151a]">
-
       {/* Background decoration */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-
         <div className="absolute -left-24 top-32 h-64 w-64 rounded-full bg-[#f7c948] opacity-20" />
 
         <div className="absolute -right-24 top-20 h-72 w-72 rounded-full bg-[#ef6b73] opacity-15" />
@@ -26,12 +24,10 @@ export default function HowToPlayPage() {
         <div className="absolute bottom-[15%] right-[12%] rotate-[-8deg] font-display text-4xl text-[#f7c948]">
           +
         </div>
-
       </div>
 
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between px-5 py-5 sm:px-10">
-
         <Link href="/" className="group">
           <img
             src="/logo.png"
@@ -65,15 +61,12 @@ export default function HowToPlayPage() {
         >
           ← Back
         </Link>
-
       </header>
 
       {/* Main */}
       <div className="relative z-10 mx-auto max-w-5xl px-5 pb-16 pt-5 sm:px-8 sm:pt-8">
-
         {/* Hero */}
         <section className="mb-10 text-center">
-
           <div className="mb-5 inline-block rotate-[-2deg] border-2 border-[#17151a] bg-[#f7c948] px-4 py-2 shadow-[4px_4px_0_#17151a]">
             <span className="font-display text-[10px] uppercase tracking-[0.16em]">
               Before you start...
@@ -91,18 +84,13 @@ export default function HowToPlayPage() {
           <p className="mx-auto mt-5 max-w-2xl text-sm font-semibold leading-relaxed text-[#625c63] sm:text-base">
             Everyone gets the same word.
             <br />
-            <span className="font-bold text-[#17151a]">
-              Except Fatah.
-            </span>
-            {" "}They have to fake their way through the round without
-            getting caught.
+            <span className="font-bold text-[#17151a]">Except Fatah.</span> They
+            have to fake their way through the round without getting caught.
           </p>
-
         </section>
 
         {/* Quick rules */}
         <section className="mb-10 grid gap-4 sm:grid-cols-3">
-
           <RuleCard
             number="01"
             color="bg-[#f7c948]"
@@ -120,15 +108,13 @@ export default function HowToPlayPage() {
           <RuleCard
             number="03"
             color="bg-[#ffe0df]"
-            title="Find Fatah"
-            text="Listen carefully, spot the suspicious clue, then vote for who you think is Fatah."
+            title="Discuss & vote"
+            text="After everyone gives a clue, you get 60 seconds to discuss, question suspicious players, and decide who you think is Fatah."
           />
-
         </section>
 
         {/* Game flow */}
         <section className="mb-10">
-
           <SectionHeading
             number="01"
             label="The game"
@@ -137,7 +123,6 @@ export default function HowToPlayPage() {
           />
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-
             <StepCard
               number="1"
               title="Join the room"
@@ -161,32 +146,36 @@ export default function HowToPlayPage() {
 
             <StepCard
               number="4"
-              title="Watch everyone"
-              text="Read the clues. Who sounds like they know exactly what the word is? Who is trying a little too hard to blend in?"
+              title="Watch the clues"
+              text="Listen to everyone's clue. Who sounds like they know the word? Who seems vague, confused, or suspicious?"
               color="bg-[#f7c948]"
             />
 
             <StepCard
               number="5"
-              title="Vote"
-              text="Choose the player you think is Fatah. Once you vote, your choice is locked."
-              color="bg-[#dfe8ff]"
+              title="Discuss"
+              text="You now have 60 seconds of live discussion. Question players, defend yourself, and work together to figure out who is Fatah."
+              color="bg-[#ffe0df]"
             />
 
             <StepCard
               number="6"
+              title="Vote"
+              text="When discussion ends, vote for the player you think is Fatah. Once you vote, your choice is locked."
+              color="bg-[#dfe8ff]"
+            />
+
+            <StepCard
+              number="7"
               title="Reveal"
               text="The votes are counted and Fatah is revealed. Then the next round begins."
               color="bg-[#ffe0df]"
             />
-
           </div>
-
         </section>
 
         {/* Roles */}
         <section className="mb-10">
-
           <SectionHeading
             number="02"
             label="Know your role"
@@ -195,20 +184,14 @@ export default function HowToPlayPage() {
           />
 
           <div className="mt-5 grid gap-5 md:grid-cols-2">
-
             {/* Sojho */}
             <div className="border-2 border-[#17151a] bg-[#fffdf8] p-5 shadow-[5px_5px_0_#17151a] sm:p-6">
-
               <div className="mb-5 flex items-center justify-between">
-
                 <div className="rotate-[-2deg] border-2 border-[#17151a] bg-[#f7c948] px-3 py-1.5 font-display text-xs uppercase tracking-[0.12em] shadow-[2px_2px_0_#17151a]">
                   SOJHO
                 </div>
 
-                <span className="font-display text-2xl">
-                  👀
-                </span>
-
+                <span className="font-display text-2xl">👀</span>
               </div>
 
               <h3 className="font-display text-2xl uppercase">
@@ -221,7 +204,6 @@ export default function HowToPlayPage() {
               </p>
 
               <ul className="mt-5 space-y-2 text-sm font-semibold">
-
                 <Tip text="Give a clue related to the word." />
 
                 <Tip text="Pay attention to everyone else's clues." />
@@ -229,24 +211,17 @@ export default function HowToPlayPage() {
                 <Tip text="Look for someone being vague or suspicious." />
 
                 <Tip text="Don't make your own clue too obvious." />
-
               </ul>
-
             </div>
 
             {/* Fatah */}
             <div className="border-2 border-[#17151a] bg-[#fffdf8] p-5 shadow-[5px_5px_0_#17151a] sm:p-6">
-
               <div className="mb-5 flex items-center justify-between">
-
                 <div className="rotate-[2deg] border-2 border-[#17151a] bg-[#ef6b73] px-3 py-1.5 font-display text-xs uppercase tracking-[0.12em] shadow-[2px_2px_0_#17151a]">
                   FATAH
                 </div>
 
-                <span className="font-display text-2xl">
-                  🫣
-                </span>
-
+                <span className="font-display text-2xl">🫣</span>
               </div>
 
               <h3 className="font-display text-2xl uppercase">
@@ -254,12 +229,11 @@ export default function HowToPlayPage() {
               </h3>
 
               <p className="mt-3 text-sm font-semibold leading-relaxed text-[#625c63]">
-                You only get a hint. Your mission is to figure out the word
-                from everyone else's clues while pretending you already know it.
+                You only get a hint. Your mission is to figure out the word from
+                everyone else's clues while pretending you already know it.
               </p>
 
               <ul className="mt-5 space-y-2 text-sm font-semibold">
-
                 <Tip text="Listen to the clues before revealing too much." />
 
                 <Tip text="Give clues that could fit multiple possibilities." />
@@ -267,18 +241,13 @@ export default function HowToPlayPage() {
                 <Tip text="Try to sound confident." />
 
                 <Tip text="Don't get caught." />
-
               </ul>
-
             </div>
-
           </div>
-
         </section>
 
         {/* Clue rules */}
         <section className="mb-10">
-
           <SectionHeading
             number="03"
             label="Clue etiquette"
@@ -287,7 +256,6 @@ export default function HowToPlayPage() {
           />
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
-
             <Advice
               good
               title="Good clue"
@@ -313,14 +281,54 @@ export default function HowToPlayPage() {
               example='"I have absolutely no idea"'
               text="Being deliberately useless makes you look suspicious."
             />
-
           </div>
-
         </section>
+        {/* Discussion */}
+        <section className="mb-10">
+          <SectionHeading
+            number="04"
+            label="Make your case"
+            title="60 seconds. Trust nobody."
+            color="bg-[#ef6b73]"
+          />
 
+          <div className="mt-5 border-2 border-[#17151a] bg-[#fffdf8] p-5 shadow-[5px_5px_0_#17151a] sm:p-7">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Advice
+                good
+                title="Question"
+                example='"Why did you say that?"'
+                text="Challenge suspicious clues and ask players to explain what they meant."
+              />
+
+              <Advice
+                good
+                title="Defend"
+                example='"My clue makes sense because..."'
+                text="If someone suspects you, explain your clue without accidentally revealing the word."
+              />
+
+              <Advice
+                good
+                title="Accuse"
+                example='"I think its Fatah."'
+                text="Pay attention to contradictions, vague answers, and players who seem to be bluffing."
+              />
+            </div>
+
+            <div className="mt-5 border-2 border-[#17151a] bg-[#f4efe4] p-4 text-center">
+              <p className="font-display text-lg uppercase">
+                When the clock hits zero...
+              </p>
+
+              <p className="mt-1 text-xs font-semibold text-[#817a82]">
+                Discussion ends. No more arguments. Time to vote.
+              </p>
+            </div>
+          </div>
+        </section>
         {/* Timing */}
         <section className="mb-10">
-
           <SectionHeading
             number="04"
             label="Keep moving"
@@ -329,13 +337,10 @@ export default function HowToPlayPage() {
           />
 
           <div className="mt-5 border-2 border-[#17151a] bg-[#fffdf8] p-5 shadow-[5px_5px_0_#17151a] sm:p-7">
-
             <div className="grid gap-5 sm:grid-cols-2">
-
               <div className="flex items-center gap-4">
-
                 <div className="flex h-16 w-16 shrink-0 rotate-[-3deg] items-center justify-center border-2 border-[#17151a] bg-[#f7c948] font-display text-xl shadow-[3px_3px_0_#17151a]">
-                  30s
+                  45s
                 </div>
 
                 <div>
@@ -347,11 +352,23 @@ export default function HowToPlayPage() {
                     Think fast and submit your clue before time runs out.
                   </p>
                 </div>
-
               </div>
-
               <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 shrink-0 rotate-[2deg] items-center justify-center border-2 border-[#17151a] bg-[#ef6b73] font-display text-xl shadow-[3px_3px_0_#17151a]">
+                  60s
+                </div>
 
+                <div>
+                  <p className="font-display text-sm uppercase tracking-[0.1em]">
+                    Discussion
+                  </p>
+
+                  <p className="mt-1 text-xs font-semibold text-[#817a82]">
+                    Talk, question, defend, and accuse.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
                 <div className="flex h-16 w-16 shrink-0 rotate-[2deg] items-center justify-center border-2 border-[#17151a] bg-[#ef6b73] font-display text-xl shadow-[3px_3px_0_#17151a]">
                   45s
                 </div>
@@ -365,22 +382,16 @@ export default function HowToPlayPage() {
                     Decide who looks the most suspicious.
                   </p>
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </section>
 
         {/* Final tip */}
         <section className="relative mx-auto max-w-2xl">
-
           <div className="absolute -right-1 -top-1 h-full w-full rotate-2 border-2 border-[#17151a] bg-[#5c8dff]" />
 
           <div className="relative border-2 border-[#17151a] bg-[#fffdf8] p-6 text-center shadow-[5px_5px_0_#17151a] sm:p-8">
-
             <div className="mx-auto mb-4 inline-block rotate-[-2deg] border-2 border-[#17151a] bg-[#f7c948] px-3 py-1.5 font-display text-[10px] uppercase tracking-[0.15em] shadow-[2px_2px_0_#17151a]">
               One last thing
             </div>
@@ -390,8 +401,8 @@ export default function HowToPlayPage() {
             </h2>
 
             <p className="mx-auto mt-3 max-w-lg text-sm font-semibold leading-relaxed text-[#625c63]">
-              Fatah is counting on you to make the wrong accusation.
-              So listen carefully, think sideways, and don't reveal too much.
+              Fatah is counting on you to make the wrong accusation. So listen
+              carefully, think sideways, and don't reveal too much.
             </p>
 
             <Link
@@ -418,26 +429,19 @@ export default function HowToPlayPage() {
             >
               Got it → Play
             </Link>
-
           </div>
-
         </section>
-
       </div>
 
       {/* Footer */}
       <footer className="relative z-10 px-5 pb-6 text-center">
-
         <p className="font-display text-[9px] uppercase tracking-[0.25em] text-[#9b949b]">
           Think carefully · Trust nobody
         </p>
-
       </footer>
-
     </main>
   );
 }
-
 
 /* -------------------------------- */
 /* Small components                 */
@@ -456,25 +460,20 @@ function RuleCard({
 }) {
   return (
     <div className="border-2 border-[#17151a] bg-[#fffdf8] p-4 shadow-[4px_4px_0_#17151a]">
-
       <div
         className={`mb-4 inline-flex h-8 w-8 rotate-[-3deg] items-center justify-center border-2 border-[#17151a] ${color} font-display text-[10px] shadow-[2px_2px_0_#17151a]`}
       >
         {number}
       </div>
 
-      <h3 className="font-display text-base uppercase">
-        {title}
-      </h3>
+      <h3 className="font-display text-base uppercase">{title}</h3>
 
       <p className="mt-2 text-xs font-semibold leading-relaxed text-[#817a82]">
         {text}
       </p>
-
     </div>
   );
 }
-
 
 function SectionHeading({
   number,
@@ -489,7 +488,6 @@ function SectionHeading({
 }) {
   return (
     <div className="flex items-end gap-3 border-b-2 border-[#17151a] pb-3">
-
       <div
         className={`flex h-10 w-10 shrink-0 rotate-[-3deg] items-center justify-center border-2 border-[#17151a] ${color} font-display text-xs shadow-[3px_3px_0_#17151a]`}
       >
@@ -505,11 +503,9 @@ function SectionHeading({
           {title}
         </h2>
       </div>
-
     </div>
   );
 }
-
 
 function StepCard({
   number,
@@ -524,9 +520,7 @@ function StepCard({
 }) {
   return (
     <div className="group border-2 border-[#17151a] bg-[#fffdf8] p-4 shadow-[4px_4px_0_#17151a] transition-transform hover:-translate-y-0.5 sm:p-5">
-
       <div className="flex gap-4">
-
         <div
           className={`flex h-9 w-9 shrink-0 rotate-[-2deg] items-center justify-center border-2 border-[#17151a] ${color} font-display text-xs shadow-[2px_2px_0_#17151a]`}
         >
@@ -534,40 +528,28 @@ function StepCard({
         </div>
 
         <div>
-
-          <h3 className="font-display text-base uppercase">
-            {title}
-          </h3>
+          <h3 className="font-display text-base uppercase">{title}</h3>
 
           <p className="mt-1.5 text-xs font-semibold leading-relaxed text-[#817a82]">
             {text}
           </p>
-
         </div>
-
       </div>
-
     </div>
   );
 }
 
-
 function Tip({ text }: { text: string }) {
   return (
     <li className="flex gap-2">
-
       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border-2 border-[#17151a] bg-[#f7c948] font-display text-[9px]">
         ✓
       </span>
 
-      <span className="text-xs leading-relaxed">
-        {text}
-      </span>
-
+      <span className="text-xs leading-relaxed">{text}</span>
     </li>
   );
 }
-
 
 function Advice({
   good,
@@ -582,9 +564,7 @@ function Advice({
 }) {
   return (
     <div className="border-2 border-[#17151a] bg-[#fffdf8] p-4 shadow-[3px_3px_0_#17151a]">
-
       <div className="flex items-center justify-between gap-3">
-
         <p className="font-display text-[10px] uppercase tracking-[0.15em]">
           {title}
         </p>
@@ -596,21 +576,15 @@ function Advice({
         >
           {good ? "✓ Works" : "✕ Too much"}
         </span>
-
       </div>
 
       <div className="mt-3 border-l-4 border-[#17151a] bg-[#f4efe4] px-3 py-2">
-
-        <p className="font-display text-sm">
-          {example}
-        </p>
-
+        <p className="font-display text-sm">{example}</p>
       </div>
 
       <p className="mt-3 text-xs font-semibold leading-relaxed text-[#817a82]">
         {text}
       </p>
-
     </div>
   );
 }

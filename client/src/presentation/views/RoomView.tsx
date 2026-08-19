@@ -487,7 +487,7 @@ export default function RoomView({ code }: { code: string }) {
 
                     <div className="border-2 border-[#17151a] bg-white p-3 text-center">
                       <p className="font-display text-xl">
-                        30s
+                        45s
                       </p>
                       <p className="text-[10px] font-bold uppercase tracking-wider">
                         Clue

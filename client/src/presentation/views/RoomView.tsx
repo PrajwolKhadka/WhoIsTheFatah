@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { useGameSocket } from "@/src/application/hooks/useGameSocket";
 import { useRoomSession } from "@/src/application/hooks/useRoomSession";
 import { clearSession } from "@/src/infrastructure/storage/sessionStorage";
-import { CLUE_SECONDS, VOTE_SECONDS } from "@/src/domain/constants";
+import { CLUE_SECONDS, VOTE_SECONDS, DISCUSS_SECONDS} from "@/src/domain/constants";
 import Timer from "@/src/presentation/components/Timer";
 import PlayerRoster from "@/src/presentation/components/PlayerRoster";
 import ClueBoard from "@/src/presentation/components/ClueBoard";
 import WordCard from "@/src/presentation/components/WordCard";
 import VotingPanel from "@/src/presentation/components/VotingPanel";
+import { useChat } from "@/src/application/hooks/useChat";
+import ChatPanel from "../components/ChatPanel";
 
 export default function RoomView({ code }: { code: string }) {
   const router = useRouter();
@@ -31,6 +33,8 @@ export default function RoomView({ code }: { code: string }) {
     joinError,
     joinDirect,
   } = useRoomSession(code, setState);
+
+  const { messages, sendMessage } = useChat();
 
   const [joinName, setJoinName] = useState("");
   const [clueText, setClueText] = useState("");
@@ -327,11 +331,13 @@ export default function RoomView({ code }: { code: string }) {
                   ? "Lobby"
                   : state.status === "clue"
                     ? "Clue time"
-                    : state.status === "voting"
-                      ? "Voting"
-                      : state.status === "reveal"
-                        ? "Reveal"
-                        : "Case closed"}
+                    : state.status === "discuss"
+                      ? "Discuss"
+                      : state.status === "voting"
+                        ? "Voting"
+                        : state.status === "reveal"
+                          ? "Reveal"
+                          : "Case closed"}
               </span>
             </div>
 
@@ -423,6 +429,16 @@ export default function RoomView({ code }: { code: string }) {
               >
                 Leave room
               </button>
+            )}
+
+            {state.status !== "lobby" && (
+              <div className="border-2 border-[#17151a] shadow-[4px_4px_0_#17151a]">
+                <ChatPanel
+                  messages={messages}
+                  selfId={selfId}
+                  onSend={(text) => sendMessage(text)}
+                />
+              </div>
             )}
 
           </aside>
@@ -607,6 +623,39 @@ export default function RoomView({ code }: { code: string }) {
 
                   </div>
                 )}
+
+                <div className="border-2 border-[#17151a] bg-[#fffdf8] p-4 shadow-[4px_4px_0_#17151a]">
+                  <ClueBoard
+                    clues={state.clues}
+                    phase={state.phase}
+                  />
+                </div>
+              </>
+            )}
+
+            {state.status === "discuss" && (
+              <>
+                <div className="border-2 border-[#17151a] bg-white p-4 shadow-[4px_4px_0_#17151a]">
+                  <Timer
+                    endsAt={state.timerEnd}
+                    totalSeconds={DISCUSS_SECONDS}
+                    label="Discuss — voting starts soon"
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="absolute -right-1 -top-1 h-full w-full rotate-1 border-2 border-[#17151a] bg-[#5c8dff]" />
+
+                  <div className="relative border-2 border-[#17151a] bg-[#fffdf8] p-5 text-center shadow-[5px_5px_0_#17151a]">
+                    <p className="font-display text-xl uppercase">
+                      Talk it out
+                    </p>
+                    <p className="mt-2 text-sm font-semibold text-[#817a82]">
+                      Use the chat to figure out who Fatah is before voting
+                      opens.
+                    </p>
+                  </div>
+                </div>
 
                 <div className="border-2 border-[#17151a] bg-[#fffdf8] p-4 shadow-[4px_4px_0_#17151a]">
                   <ClueBoard

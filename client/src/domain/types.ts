@@ -1,4 +1,4 @@
-export type GameStatus = "lobby" | "clue" | "voting" | "reveal" | "ended";
+export type GameStatus = "lobby" | "clue"| "discuss" | "voting" | "reveal" | "ended";
 
 export interface PublicPlayer {
   id: string;
@@ -17,6 +17,14 @@ export interface Clue {
   word: string;
 }
 
+export interface ChatMessage {
+  id: string;
+  playerId: string;
+  playerName: string;
+  text: string;
+  sentAt: number;
+}
+
 export interface PublicGameState {
   code: string;
   status: GameStatus;
@@ -26,7 +34,7 @@ export interface PublicGameState {
   roundsThisPhase: number;
   clues: Clue[];
   timerEnd: number | null;
-  timerPhaseTag: "clue" | "voting" | "reveal" | null;
+  timerPhaseTag: "clue"| "discuss" | "voting" | "reveal" | null;
   winner: "sojho" | "fatah" | null;
   revealedFatahId: string | null;
   lastEliminatedId: string | null;

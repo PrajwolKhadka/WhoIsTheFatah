@@ -11,6 +11,7 @@ import { RestartGame } from "../../application/use-cases/RestartGame";
 import { toPublicGameState } from "../../application/dto/RoomPresenter";
 import { PlayerSocketRegistry } from "../../infrastructure/realtime/PlayerSocketRegistry";
 import { SocketSession } from "./socketSession";
+import { SendChatMessage } from "../../application/use-cases/SendChatMessage";
 
 export interface SocketUseCases {
   createRoom: CreateRoom;
@@ -21,6 +22,7 @@ export interface SocketUseCases {
   submitClue: SubmitClue;
   submitVote: SubmitVote;
   restartGame: RestartGame;
+  sendChatMessage: SendChatMessage;
 }
 
 export function registerSocketHandlers(
@@ -39,6 +41,7 @@ export function registerSocketHandlers(
       socket.join(code);
       data.code = code;
       data.playerId = playerId;
+      socket.emit("chat:history",[]);
       cb?.({ code, playerId });
     });
 
@@ -56,6 +59,9 @@ export function registerSocketHandlers(
         socket.join(upper);
         data.code = upper;
         data.playerId = result.playerId;
+        const room = rooms.get(upper);
+        socket.emit("chat:history", room ? room.chatMessages : []);
+
         cb?.({ code: upper, playerId: result.playerId });
       },
     );
@@ -74,6 +80,8 @@ export function registerSocketHandlers(
         data.code = upper;
         data.playerId = playerId;
         const room = rooms.get(upper);
+        socket.emit("chat:history", room ? room.chatMessages : []);
+
         cb?.({ ok: true, state: room ? toPublicGameState(room) : null });
       },
     );
@@ -106,6 +114,12 @@ export function registerSocketHandlers(
       cb?.({ error });
     });
 
+    socket.on("chat:send", ({ text }: { text: string }, cb) => {
+      if (!data.code || !data.playerId) return;
+      const error = useCases.sendChatMessage.execute(data.code, data.playerId, text);
+      cb?.({ error });
+    });
+    
     socket.on("disconnect", () => {
       if (!data.code || !data.playerId) return;
       setTimeout(() => {

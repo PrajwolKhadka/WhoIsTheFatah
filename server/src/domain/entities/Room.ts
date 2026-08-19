@@ -2,7 +2,7 @@ import { GameStatus, TimerPhaseTag, Winner } from "../value-objects/GameStatus";
 import { Clue } from "./Clue";
 import { Player } from "./Player";
 import { Vote } from "./Vote";
-
+import { ChatMessage } from "./ChatMessage";
 export interface Room {
     code: string;
     hostId: string;
@@ -20,6 +20,7 @@ export interface Room {
     timerPhaseTag: TimerPhaseTag;
     winner: Winner;
     fatahId: string | null;
+    chatMessages: ChatMessage[];
     lastEliminatedId: string | null;
     createdAt: number;
 }

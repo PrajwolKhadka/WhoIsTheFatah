@@ -3,6 +3,7 @@ import { RoomRepository } from "../../application/ports/RoomRepository";
 import { Notifier } from "../../application/ports/Notifier";
 import { toPublicGameState } from "../../application/dto/RoomPresenter";
 import { PlayerSocketRegistry } from "./PlayerSocketRegistry";
+import { ChatMessage } from "../../domain/entities/ChatMessage";
 
 export class SocketNotifier implements Notifier {
   constructor(
@@ -10,6 +11,9 @@ export class SocketNotifier implements Notifier {
     private rooms: RoomRepository,
     private sockets: PlayerSocketRegistry
   ) {}
+  broadcastChatMessage(code: string, message: ChatMessage): void {
+    this.io.to(code).emit("chat:message",message);
+  }
 
   broadcastState(code: string): void {
     const room = this.rooms.get(code);

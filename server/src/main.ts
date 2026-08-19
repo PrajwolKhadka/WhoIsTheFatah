@@ -16,6 +16,7 @@ import { SubmitClue } from "./application/use-cases/SubmitClue";
 import { SubmitVote } from "./application/use-cases/SubmitVote";
 import { RestartGame } from "./application/use-cases/RestartGame";
 import { registerSocketHandlers } from "./interfaces/socket/registerSocketHandlers";
+import { SendChatMessage } from "./application/use-cases/SendChatMessage";
 
 const PORT = process.env.PORT || 4000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
@@ -41,6 +42,7 @@ const useCases = {
   submitClue: new SubmitClue(engine),
   submitVote: new SubmitVote(engine),
   restartGame: new RestartGame(engine),
+  sendChatMessage: new SendChatMessage(rooms, notifier)
 };
 
 registerSocketHandlers(io, rooms, sockets, useCases);

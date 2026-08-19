@@ -5,6 +5,7 @@ import {
   VOTE_SECONDS,
   CLUE_SECONDS,
   DISCONNECT_GRACE_SECONDS,
+  DISCUSS_SECONDS
 } from "../../domain/constants";
 import { activePlayers, Room } from "../../domain/entities/Room";
 import { randomRoundsThisPhase } from "../../domain/services/randomRoundsThisPhase";
@@ -109,6 +110,7 @@ export class GameEngine {
     room.word = "";
     room.hint = "";
     room.clues = [];
+    room.chatMessage = [];
     room.votes = [];
     room.submittedThisRound = new Set();
     room.timerEnd = null;
@@ -324,11 +326,25 @@ export class GameEngine {
     });
 
     if (room.round >= room.roundsThisPhase) {
-      this.beginVoting(room);
+      this.beginDiscussion(room);
     } else {
       room.round += 1;
       this.beginClueRound(room);
     }
+  }
+    private beginDiscussion(room: Room) {
+    room.status = "discuss";
+    room.timerPhaseTag = "discuss";
+    room.timerEnd = Date.now() + DISCUSS_SECONDS * 1000;
+    this.rooms.save(room);
+    this.notifier.broadcastState(room.code);
+    this.scheduler.schedule(room.code, DISCUSS_SECONDS, () => this.endDiscussion(room.code));
+  }
+
+  private endDiscussion(code: string) {
+    const room = this.rooms.get(code);
+    if (!room || room.status !== "discuss") return;
+    this.beginVoting(room);
   }
 
   private beginVoting(room: Room) {

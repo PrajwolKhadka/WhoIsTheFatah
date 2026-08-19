@@ -157,7 +157,7 @@ export default function HomeView() {
               </div>
 
               <div className="flex items-center gap-2 border-2 border-[#17151a] bg-white px-4 py-2 shadow-[3px_3px_0_#17151a]">
-                <span className="font-display text-lg">30s</span>
+                <span className="font-display text-lg">45s</span>
                 <span className="text-xs font-bold uppercase tracking-wide text-[#6b646d]">
                   Clue
                 </span>

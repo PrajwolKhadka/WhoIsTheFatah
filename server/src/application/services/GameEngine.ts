@@ -110,7 +110,7 @@ export class GameEngine {
     room.word = "";
     room.hint = "";
     room.clues = [];
-    room.chatMessage = [];
+    room.chatMessages = [];
     room.votes = [];
     room.submittedThisRound = new Set();
     room.timerEnd = null;

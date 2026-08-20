@@ -17,7 +17,7 @@ export default function BackgroundMusic() {
     const savedMute = localStorage.getItem("sojho-muted");
 
     if (savedMute !== null) {
-      const isMuted = savedMute === "false";
+      const isMuted = savedMute === "true";
 
       setMuted(isMuted);
       audio.muted = isMuted;

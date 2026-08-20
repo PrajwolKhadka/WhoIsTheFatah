@@ -11,7 +11,11 @@ export function toPublicGameState(room: Room): PublicGameState {
     left: p.left,
   }));
 
-  const revealed = room.status === "reveal" || room.status === "ended";
+  // const revealed = room.status === "reveal" || room.status === "ended";
+  const gameOver = room.status === "ended";
+  const fatahCaughtThisReveal =
+    room.status === "reveal" && room.lastEliminatedId === room.fatahId;
+  const revealed = gameOver || fatahCaughtThisReveal;
 
   return {
     code: room.code,

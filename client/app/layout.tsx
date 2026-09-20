@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "A real-time social deduction word game. Find the imposter before it's too late.",
 };
 
-export const viewport: Viewport = {
+export const viewport: Viewport = { 
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,

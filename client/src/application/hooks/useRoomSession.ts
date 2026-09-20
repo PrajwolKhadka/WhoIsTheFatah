@@ -16,6 +16,7 @@ export function useRoomSession(
   const [selfId, setSelfId] = useState<string | null>(null);
   const [needsJoin, setNeedsJoin] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
+  const [joining, setJoining] = useState(false);
 
   useEffect(() => {
     const socket = getSocket();
@@ -55,9 +56,9 @@ export function useRoomSession(
     // having "left" once the disconnect grace period on the old
     // connection times out.
     socket.on("connect", attemptRejoin);
-    if (socket.connected) {
-      attemptRejoin();
-    }
+    // if (socket.connected) {
+    //   attemptRejoin();
+    // }
     return () => {
       socket.off("connect", attemptRejoin);
     };
@@ -65,6 +66,8 @@ export function useRoomSession(
   }, [code]);
 
   const joinDirect = (name: string) => {
+    if (joining) return;
+
     setJoinError(null);
     const trimmed = name.trim();
     if (!trimmed) {
@@ -86,5 +89,5 @@ export function useRoomSession(
     );
   };
 
-  return { selfId, needsJoin, joinError, joinDirect };
+  return { selfId, needsJoin, joinError, joining, joinDirect };
 }

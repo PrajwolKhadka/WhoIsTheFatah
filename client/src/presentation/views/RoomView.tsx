@@ -31,6 +31,7 @@ export default function RoomView({ code }: { code: string }) {
     selfId,
     needsJoin,
     joinError,
+    joining,
     joinDirect,
   } = useRoomSession(code, setState);
 
@@ -179,9 +180,10 @@ export default function RoomView({ code }: { code: string }) {
 
               <button
                 onClick={() => joinDirect(joinName)}
+                disabled = {joining}
                 className="mt-5 w-full border-2 border-[#17151a] bg-[#f7c948] py-4 font-display text-sm uppercase tracking-[0.14em] shadow-[4px_4px_0_#17151a] transition-all hover:bg-[#ffd65e] active:translate-x-[3px] active:translate-y-[3px] active:shadow-[1px_1px_0_#17151a]"
               >
-                Join room →
+                {joining ? "Joining…" : "Join room →"}
               </button>
 
               <div className="mt-6 border-t-2 border-dashed border-[#d8d2c9] pt-4 text-center">
